@@ -1,0 +1,37 @@
+name: Testar servidor Node.js
+
+on:
+  push:
+    branches:
+      - main  # Aciona o workflow quando houver um push na branch 'main'
+
+jobs:
+  build_and_run:
+    runs-on: ubuntu-latest  # Executa o job em uma máquina virtual com Ubuntu
+
+    steps:
+      # Passo 1: Checkout do código
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      # Passo 2: Configurar Node.js
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Configura a versão do Node.js para 16
+
+      # Passo 3: Instalar as dependências
+      - name: Instalar dependências
+        run: npm install
+
+      # Passo 4: Rodar o servidor
+      - name: Rodar o servidor
+        run: |
+          nohup node app.js &
+          echo "Servidor rodando em segundo plano..."
+
+      # Passo 5: Testar se o servidor está funcionando com curl
+      - name: Testar se o servidor está funcionando
+        run: |
+          sleep 10  # Espera o servidor iniciar
+          curl http://localhost:3000  # Verifica se o servidor responde
